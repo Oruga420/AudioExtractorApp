@@ -30,6 +30,15 @@ def upload_videos():
     if not videos:
         return jsonify({'error': 'No video files selected'}), 400
 
+    audio_format = request.form.get('audioFormat', 'mp3')
+    audio_quality = request.form.get('audioQuality', 'medium')
+
+    bitrate = {
+        'low': '64k',
+        'medium': '128k',
+        'high': '256k'
+    }.get(audio_quality, '128k')
+
     extracted_files = []
     for video in videos:
         if video and allowed_file(video.filename):
@@ -38,14 +47,25 @@ def upload_videos():
             video.save(video_path)
 
             # Extract audio
-            audio_filename = os.path.splitext(filename)[0] + '.mp3'
+            audio_filename = f"{os.path.splitext(filename)[0]}.{audio_format}"
             audio_path = os.path.join(app.config['EXTRACTED_AUDIO_FOLDER'], audio_filename)
 
             try:
+                output_params = {
+                    'acodec': {
+                        'mp3': 'libmp3lame',
+                        'wav': 'pcm_s16le',
+                        'aac': 'aac'
+                    }.get(audio_format, 'libmp3lame'),
+                    'ab': bitrate
+                }
+                if audio_format == 'wav':
+                    del output_params['ab']  # WAV doesn't use bitrate
+
                 (
                     ffmpeg
                     .input(video_path)
-                    .output(audio_path, acodec='libmp3lame', ab='128k')
+                    .output(audio_path, **output_params)
                     .overwrite_output()
                     .run(capture_stdout=True, capture_stderr=True)
                 )

@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const uploadForm = document.getElementById('uploadForm');
     const videoFiles = document.getElementById('videoFiles');
+    const audioFormat = document.getElementById('audioFormat');
+    const audioQuality = document.getElementById('audioQuality');
     const progressContainer = document.getElementById('progressContainer');
     const uploadProgress = document.getElementById('uploadProgress');
     const statusMessage = document.getElementById('statusMessage');
@@ -24,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < videoFiles.files.length; i++) {
             formData.append('videos', videoFiles.files[i]);
         }
+        formData.append('audioFormat', audioFormat.value);
+        formData.append('audioQuality', audioQuality.value);
 
         try {
             const response = await fetch('/upload', {
