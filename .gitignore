@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+.env
+
+# Flask
+instance/
+.webassets-cache
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# Uploaded files and extracted audio
+uploads/
+extracted_audio/
+
+# Replit specific
+.replit
+.breakpoints
+replit.nix
+poetry.lock
+
+# Other
+.DS_Store
+.idea/
+*.swp
