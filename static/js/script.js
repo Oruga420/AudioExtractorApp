@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressContainer = document.getElementById('progressContainer');
     const uploadProgress = document.getElementById('uploadProgress');
     const statusMessage = document.getElementById('statusMessage');
+    const previewContainer = document.getElementById('previewContainer');
+    const audioPreview = document.getElementById('audioPreview');
     const downloadContainer = document.getElementById('downloadContainer');
     const downloadList = document.getElementById('downloadList');
 
@@ -21,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadProgress.value = 0;
         statusMessage.textContent = 'Uploading...';
         downloadList.innerHTML = '';
+        previewContainer.classList.add('hidden');
 
         const formData = new FormData();
         for (let i = 0; i < videoFiles.files.length; i++) {
@@ -53,7 +56,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     a.href = `/download/${file}`;
                     a.textContent = file;
                     a.download = true;
+                    
+                    const previewButton = document.createElement('button');
+                    previewButton.textContent = 'Preview';
+                    previewButton.addEventListener('click', () => {
+                        audioPreview.src = `/preview/${file}`;
+                        audioPreview.play();
+                        previewContainer.classList.remove('hidden');
+                    });
+                    
                     li.appendChild(a);
+                    li.appendChild(previewButton);
                     downloadList.appendChild(li);
                 });
             } else {
@@ -68,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     videoFiles.addEventListener('change', () => {
         downloadContainer.classList.add('hidden');
         progressContainer.classList.add('hidden');
+        previewContainer.classList.add('hidden');
         statusMessage.textContent = '';
     });
 });

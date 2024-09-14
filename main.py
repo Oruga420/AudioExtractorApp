@@ -84,5 +84,9 @@ def upload_videos():
 def download_audio(filename):
     return send_file(os.path.join(app.config['EXTRACTED_AUDIO_FOLDER'], filename), as_attachment=True)
 
+@app.route('/preview/<filename>')
+def preview_audio(filename):
+    return send_file(os.path.join(app.config['EXTRACTED_AUDIO_FOLDER'], filename), as_attachment=False)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
