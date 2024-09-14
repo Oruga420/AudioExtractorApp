@@ -1,26 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
     const uploadForm = document.getElementById('uploadForm');
-    const videoFile = document.getElementById('videoFile');
+    const videoFiles = document.getElementById('videoFiles');
     const progressContainer = document.getElementById('progressContainer');
     const uploadProgress = document.getElementById('uploadProgress');
     const statusMessage = document.getElementById('statusMessage');
     const downloadContainer = document.getElementById('downloadContainer');
-    const downloadLink = document.getElementById('downloadLink');
+    const downloadList = document.getElementById('downloadList');
 
     uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        if (!videoFile.files.length) {
-            alert('Please select a video file.');
+        if (!videoFiles.files.length) {
+            alert('Please select at least one video file.');
             return;
         }
-
-        const formData = new FormData();
-        formData.append('video', videoFile.files[0]);
 
         progressContainer.classList.remove('hidden');
         uploadProgress.value = 0;
         statusMessage.textContent = 'Uploading...';
+        downloadList.innerHTML = '';
+
+        const formData = new FormData();
+        for (let i = 0; i < videoFiles.files.length; i++) {
+            formData.append('videos', videoFiles.files[i]);
+        }
 
         try {
             const response = await fetch('/upload', {
@@ -40,7 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.success) {
                 statusMessage.textContent = 'Audio extracted successfully!';
                 downloadContainer.classList.remove('hidden');
-                downloadLink.href = `/download/${result.filename}`;
+                result.files.forEach(file => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = `/download/${file}`;
+                    a.textContent = file;
+                    a.download = true;
+                    li.appendChild(a);
+                    downloadList.appendChild(li);
+                });
             } else {
                 throw new Error(result.error || 'Unknown error occurred');
             }
@@ -50,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    videoFile.addEventListener('change', () => {
+    videoFiles.addEventListener('change', () => {
         downloadContainer.classList.add('hidden');
         progressContainer.classList.add('hidden');
         statusMessage.textContent = '';

@@ -10,7 +10,7 @@
     <div class="container">
         <h1>Video to Audio Extractor</h1>
         <form id="uploadForm" enctype="multipart/form-data">
-            <input type="file" id="videoFile" name="video" accept="video/*" required>
+            <input type="file" id="videoFiles" name="videos" accept="video/*" multiple required>
             <button type="submit">Extract Audio</button>
         </form>
         <div id="progressContainer" class="hidden">
@@ -18,7 +18,8 @@
             <p id="statusMessage"></p>
         </div>
         <div id="downloadContainer" class="hidden">
-            <a id="downloadLink" href="#" download>Download Extracted Audio</a>
+            <h3>Extracted Audio Files:</h3>
+            <ul id="downloadList"></ul>
         </div>
     </div>
     <script src="/static/js/script.js"></script>
